@@ -1,8 +1,8 @@
-var roleHarvester = {
+const roleHarvester = {
   /** @param {Creep} creep **/
   run: function (creep) {
     if (creep.store.getFreeCapacity() > 0) {
-      var sources = creep.room.find(FIND_SOURCES_ACTIVE)
+      const sources = creep.room.find(FIND_SOURCES_ACTIVE)
       // console.log(sources[0].pos)
       // TODO: make them go to nearest energy source
       if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
