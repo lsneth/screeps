@@ -3,7 +3,7 @@ const creeperRoles = {
     role: 'harvester',
     parts: [WORK, CARRY, CARRY, CARRY, MOVE],
     memory: { role: 'harvester' },
-    probability: 4,
+    probability: 6,
   },
   builder: {
     role: 'builder',
@@ -21,7 +21,7 @@ const creeperRoles = {
     role: 'repairer',
     parts: [WORK, WORK, CARRY, MOVE],
     memory: { role: 'repairer', repairing: false },
-    probability: 2,
+    probability: 1,
   },
 }
 
