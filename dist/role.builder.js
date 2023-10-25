@@ -4,6 +4,7 @@ const roleBuilder = {
     const sources = creep.room.find(FIND_SOURCES)
     if (creep.memory.building === true) {
       const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
+      if (constructionSites.length === 0) return
       if (creep.store[RESOURCE_ENERGY] === 0) {
         creep.memory.building = false
         if (creep.harvest(sources[1]) === ERR_NOT_IN_RANGE) {
