@@ -17,12 +17,12 @@ const creeperRoles = {
     memory: { role: 'upgrader', upgrading: false },
     probability: 3,
   },
-  // roadRepairer: {
-  //   role: 'roadRepairer',
-  //   parts: [WORK, WORK, CARRY, CARRY],
-  //   memory: { role: 'roadRepairer', repairing: false },
-  //   probability: 2,
-  // },
+  repairer: {
+    role: 'repairer',
+    parts: [WORK, WORK, CARRY, MOVE],
+    memory: { role: 'repairer', repairing: false },
+    probability: 2,
+  },
 }
 
 function buildCreeperRolesArray() {
