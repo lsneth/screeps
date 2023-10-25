@@ -7,8 +7,8 @@ const roleBuilder = {
       if (constructionSites.length === 0) return
       if (creep.store[RESOURCE_ENERGY] === 0) {
         creep.memory.building = false
-        if (creep.harvest(sources[1]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(sources[1])
+        if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(sources[0])
         }
       } else {
         if (creep.build(constructionSites[0]) == ERR_NOT_IN_RANGE) {
@@ -16,8 +16,8 @@ const roleBuilder = {
         }
       }
     } else {
-      if (creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[1])
+      if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(sources[0])
       } else if (creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
         creep.memory.building = true
       }
