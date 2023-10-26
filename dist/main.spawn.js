@@ -1,4 +1,4 @@
-const buildRolesArray = require('./roles')
+const buildRolesArray = require('./role.roles')
 
 function mainSpawn() {
   // define spawn structure to spawn at

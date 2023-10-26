@@ -6,13 +6,17 @@ function harvest(creep) {
     return transfer(creep)
   }
 
-  const sources = creep.room.find(FIND_SOURCES_ACTIVE)
+  let source = creep.pos.findClosestByPath(FIND_SOURCES)
+  if (!source) {
+    creep.pos.findClosestByRange(FIND_SOURCES)
+  }
 
-  const harvestResult = creep.harvest(sources[0])
-  if (harvestResult === OK) {
+  const harvestResult = creep.harvest(source)
+  // ERR_BUSY is when they're still being spawned
+  if (harvestResult === OK || harvestResult === ERR_BUSY) {
     return
   } else if (harvestResult === ERR_NOT_IN_RANGE) {
-    creep.moveTo(sources[0])
+    creep.moveTo(source)
   } else {
     Game.notify('Harvester harvest error: ', harvestResult)
     console.log('Harvester harvest error: ', harvestResult)
@@ -27,13 +31,14 @@ function transfer(creep) {
     return harvest(creep)
   }
 
-  // array of all spawns
-  const spawns = creep.room.find(FIND_STRUCTURES, {
-    filter: (structure) =>
-      structure.structureType === STRUCTURE_SPAWN && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
-  })
-  // array of all extensions
-  const extensions = creep.room.find(FIND_STRUCTURES, {
+  let closestSpawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
+
+  if (!closestSpawn) {
+    closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
+  }
+
+  // closest extension that isn't full
+  const closestExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
     filter: (structure) =>
       structure.structureType === STRUCTURE_EXTENSION &&
       structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
@@ -41,10 +46,12 @@ function transfer(creep) {
   })
 
   // determine what energy store to transfer to, extensions take priority because they don't create their own
-  const energyStore = extensions.length > 0 ? extensions[0] : spawns[0]
+  const energyStore = closestExtension ? closestExtension : closestSpawn
 
   const transferResult = creep.transfer(energyStore, RESOURCE_ENERGY)
-  if (transferResult === OK) {
+  // if it's full, just wait
+  // TODO: maybe it should move on when the store is full?
+  if (transferResult === OK || transferResult === ERR_FULL) {
     return
   } else if (transferResult === ERR_NOT_IN_RANGE) {
     creep.moveTo(energyStore)
