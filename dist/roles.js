@@ -1,8 +1,8 @@
-const creeperRoles = {
+const roles = {
   harvester: {
     role: 'harvester',
     parts: [WORK, WORK, CARRY, MOVE],
-    memory: { role: 'harvester' },
+    memory: { role: 'harvester', harvesting: true },
     probability: 6,
   },
   builder: {
@@ -25,15 +25,15 @@ const creeperRoles = {
   },
 }
 
-function buildCreeperRolesArray() {
-  const creeperRolesArray = []
-  for (let role in creeperRoles) {
-    for (let i = 0; i < creeperRoles[role].probability; i++) {
-      creeperRolesArray.push(creeperRoles[role])
+function buildRolesArray() {
+  const rolesArray = []
+  for (let role in roles) {
+    for (let i = 0; i < roles[role].probability; i++) {
+      rolesArray.push(roles[role])
     }
   }
 
-  return creeperRolesArray
+  return rolesArray
 }
 
-module.exports = buildCreeperRolesArray
+module.exports = buildRolesArray

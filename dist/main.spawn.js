@@ -1,4 +1,4 @@
-const buildCreeperRolesArray = require('creeperRoles')
+const buildRolesArray = require('./roles')
 
 function mainSpawn() {
   // define spawn structure to spawn at
@@ -6,16 +6,16 @@ function mainSpawn() {
 
   if (!spawnStructure.spawning) {
     // get a random creeper role, respecting probabilities
-    const creeperRolesArray = buildCreeperRolesArray()
-    const random = Math.floor(Math.random() * creeperRolesArray.length)
-    const creeperRole = creeperRolesArray[random]
+    const rolesArray = buildRolesArray()
+    const random = Math.floor(Math.random() * rolesArray.length)
+    const role = rolesArray[random]
 
-    const spawnResult = spawnStructure.spawnCreep(creeperRole.parts, `${creeperRole.role}${Game.time.toString()}`, {
-      memory: creeperRole.memory,
+    const spawnResult = spawnStructure.spawnCreep(role.parts, `${role.role}${Game.time.toString()}`, {
+      memory: role.memory,
     })
 
     if (spawnResult === OK) {
-      console.log('Spawn Success: ', creeperRole.role)
+      console.log('Spawn Success: ', role.role)
     } else if (spawnResult === ERR_NOT_ENOUGH_ENERGY) {
       // console.log('not enough energy)
     } else {

@@ -1,6 +1,6 @@
-const mainSpawn = require('mainSpawn')
-const mainActions = require('mainActions')
-const mainCleanup = require('mainCleanup')
+const mainSpawn = require('./main.spawn')
+const mainActions = require('./main.actions')
+const mainCleanup = require('./main.cleanup')
 
 module.exports.loop = function () {
   // spawn creep(s)

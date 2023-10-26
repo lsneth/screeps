@@ -1,22 +1,22 @@
-const roleHarvester = require('role.harvester')
-const roleUpgrader = require('role.upgrader')
-const roleBuilder = require('role.builder')
-const roleRepairer = require('role.repairer')
+const harvester = require('./role.harvester')
+const upgrader = require('./role.upgrader')
+const builder = require('./role.builder')
+const repairer = require('./role.repairer')
 
 function mainActions() {
   for (const name in Game.creeps) {
     const creep = Game.creeps[name]
     if (creep.memory.role === 'harvester') {
-      roleHarvester.run(creep)
+      harvester(creep)
     }
     if (creep.memory.role === 'upgrader') {
-      roleUpgrader.run(creep)
+      upgrader(creep)
     }
     if (creep.memory.role === 'builder') {
-      roleBuilder.run(creep)
+      builder(creep)
     }
     if (creep.memory.role === 'repairer') {
-      roleRepairer.run(creep)
+      repairer(creep)
     }
   }
 }
