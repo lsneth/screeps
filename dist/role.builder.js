@@ -1,10 +1,8 @@
 function builder(creep) {
-  // TODO: remove after roads are built around bottom source
-  const source = creep.room.find(FIND_SOURCES)[0]
-  // let source = creep.pos.findClosestByPath(FIND_SOURCES) // TODO: FIND_SOURCES_ACTIVE?
-  // if (!source) {
-  //   creep.pos.findClosestByRange(FIND_SOURCES)
-  // }
+  let source = creep.pos.findClosestByPath(FIND_SOURCES) // TODO: FIND_SOURCES_ACTIVE?
+  if (!source) {
+    creep.pos.findClosestByRange(FIND_SOURCES)
+  }
 
   if (creep.memory.building === true) {
     const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)

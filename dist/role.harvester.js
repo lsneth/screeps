@@ -1,3 +1,5 @@
+const resultCodes = require('./utils.resultCodes')
+
 // harvest energy from an energy source
 function harvest(creep) {
   // if creep's store is full, set harvesting to false and start transferring
