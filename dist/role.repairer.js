@@ -1,5 +1,9 @@
 function repairer(creep) {
-  const sources = creep.room.find(FIND_SOURCES)
+  let source = creep.pos.findClosestByPath(FIND_SOURCES)
+  if (!source) {
+    creep.pos.findClosestByRange(FIND_SOURCES)
+  }
+
   if (creep.memory.repairing === true) {
     const repairSites = creep.room.find(FIND_STRUCTURES, {
       filter: (object) => object.hits < object.hitsMax,
@@ -10,8 +14,8 @@ function repairer(creep) {
 
     if (creep.store[RESOURCE_ENERGY] === 0) {
       creep.memory.repairing = false
-      if (creep.harvest(sources[1]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[1])
+      if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(source)
       }
     } else {
       if (creep.repair(repairSites[0]) == ERR_NOT_IN_RANGE) {
@@ -19,8 +23,8 @@ function repairer(creep) {
       }
     }
   } else {
-    if (creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(sources[1])
+    if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+      creep.moveTo(source)
     } else if (creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
       creep.memory.repairing = true
     }

@@ -18,8 +18,8 @@ function harvest(creep) {
   } else if (harvestResult === ERR_NOT_IN_RANGE) {
     creep.moveTo(source)
   } else {
-    Game.notify('Harvester harvest error: ', harvestResult)
-    console.log('Harvester harvest error: ', harvestResult)
+    Game.notify(`Harvester harvest error: ${harvestResult}`)
+    console.log(`Harvester harvest error: ${harvestResult}. Creep: ${creep}. Source: ${source}.`)
   }
 }
 

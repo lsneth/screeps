@@ -9,7 +9,7 @@ const roles = {
     role: 'builder',
     parts: [WORK, WORK, CARRY, MOVE],
     memory: { role: 'builder', building: false },
-    probability: 3,
+    probability: 2, // TODO: bump back up once roads are built around left energy source
   },
   upgrader: {
     role: 'upgrader',
