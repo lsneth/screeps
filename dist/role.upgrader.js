@@ -12,9 +12,9 @@ function upgrader(creep) {
       }
     } else {
       const upgradeResult = creep.upgradeController(creep.room.controller)
-      if (upgradeResult == OK) {
+      if (upgradeResult === OK) {
         return
-      } else if (upgradeResult == ERR_NOT_IN_RANGE) {
+      } else if (upgradeResult === ERR_NOT_IN_RANGE) {
         creep.moveTo(creep.room.controller)
       } else {
         Game.notify('Harvester harvest error: ', harvestResult)
@@ -22,7 +22,7 @@ function upgrader(creep) {
       }
     }
   } else {
-    if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+    if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
       creep.moveTo(source)
     } else if (creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
       creep.memory.upgrading = true

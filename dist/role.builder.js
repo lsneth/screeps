@@ -13,12 +13,12 @@ function builder(creep) {
         creep.moveTo(source)
       }
     } else {
-      if (creep.build(constructionSites[0]) == ERR_NOT_IN_RANGE) {
+      if (creep.build(constructionSites[0]) === ERR_NOT_IN_RANGE) {
         creep.moveTo(constructionSites[0])
       }
     }
   } else {
-    if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+    if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
       creep.moveTo(source)
     } else if (creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
       creep.memory.building = true

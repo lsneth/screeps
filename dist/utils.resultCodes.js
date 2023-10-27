@@ -31,4 +31,4 @@ const buildCodes = {
   12: 'build result: ERR_NO_BODYPART, There are no WORK body parts in this creep’s body.',
 }
 
-module.exports = { harvestCodes, buildCodes }
+module.exports = { buildCodes, harvestCodes, transferCodes }

@@ -1,28 +1,25 @@
 const { harvestCodes, transferCodes } = require('./utils.resultCodes')
+// const harvest = require('./action.harvest') // TODO: fix harvest function and import it here instead of defining it here
 
 // harvest energy from an energy source
 function harvest(creep) {
   // if creep's store is full, set harvesting to false and start transferring
-  if (creep.store.getFreeCapacity() == 0) {
-    creep.memory.destinationId = null
+  if (creep.store.getFreeCapacity() === 0) {
     creep.memory.harvesting = false
     return transfer(creep)
   }
 
-  if (!creep.memory.destinationId) {
-    const closestSource = creep.pos.findClosestByPath(FIND_SOURCES)
-    creep.memory.destinationId = closestSource ? closestSource.id : creep.pos.findClosestByRange(FIND_SOURCES).id
+  let source = creep.pos.findClosestByPath(FIND_SOURCES)
+  if (!source) {
+    creep.pos.findClosestByRange(FIND_SOURCES)
   }
-  const destination = Game.getObjectById(creep.memory.destinationId)
 
-  const harvestResult = creep.harvest(destination)
-  // ERR_BUSY is when they're still being spawned
-  if (harvestResult === OK || harvestResult === ERR_BUSY) {
+  const harvestResult = creep.harvest(source)
+  // ERR_BUSY is when they're still being spawned, ERR_INVALID_TARGET in this case is because all energy sources are blocked
+  if (harvestResult === OK || harvestResult === ERR_BUSY || harvestResult === ERR_INVALID_TARGET) {
     return
   } else if (harvestResult === ERR_NOT_IN_RANGE) {
-    creep.moveTo(destination)
-  } else if (harvestResult === ERR_INVALID_TARGET) {
-    creep.moveTo(destination)
+    creep.moveTo(source)
   } else {
     Game.notify(`${harvestCodes[Math.abs(harvestResult)]}`)
     console.log(`${harvestCodes[Math.abs(harvestResult)]}`)
@@ -33,40 +30,36 @@ function harvest(creep) {
 function transfer(creep) {
   // if creep's store is empty, switch to harvesting mode and harvest
   if (creep.store.getFreeCapacity() === creep.store.getCapacity()) {
-    creep.memory.destinationId = null
     creep.memory.harvesting = true
     return harvest(creep)
   }
 
-  // determine what energy store to transfer to, extensions take priority because they don't create their own energy
-  if (!creep.memory.destinationId) {
-    let closestSpawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
-    if (!closestSpawn) {
-      closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
-    }
-
-    // closest extension that isn't full
-    const closestExtension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-      filter: (structure) =>
-        structure.structureType === STRUCTURE_EXTENSION &&
-        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-        structure.hits > 0,
-    })
-
-    creep.memory.destinationId = closestExtension ? closestExtension.id : closestSpawn.id
+  let closestSpawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
+  if (!closestSpawn) {
+    closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
   }
 
-  const destination = Game.getObjectById(creep.memory.destinationId)
+  // closest extension that isn't full
+  const closestExtension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+    filter: (structure) =>
+      structure.structureType === STRUCTURE_EXTENSION &&
+      structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+      structure.hits > 0,
+  })
 
-  const transferResult = creep.transfer(destination, RESOURCE_ENERGY)
-  // if it's full, just wait // TODO: maybe it should move on when the store is full?
+  // determine what energy store to transfer to, extensions take priority because they don't create their own
+  const energyStore = closestExtension ? closestExtension : closestSpawn
+
+  const transferResult = creep.transfer(energyStore, RESOURCE_ENERGY)
+  // if it's full, just wait
+  // TODO: maybe it should move on when the store is full?
   if (transferResult === OK || transferResult === ERR_FULL) {
     return
   } else if (transferResult === ERR_NOT_IN_RANGE) {
-    creep.moveTo(destination)
+    creep.moveTo(energyStore)
   } else {
     Game.notify(`${transferCodes[Math.abs(transferResult)]}`)
-    console.log(transferCodes[Math.abs(transferResult)])
+    console.log(`${transferCodes[Math.abs(transferResult)]}`)
   }
 }
 
@@ -80,5 +73,4 @@ function harvester(creep) {
     transfer(creep)
   }
 }
-
 module.exports = harvester

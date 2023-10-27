@@ -2,7 +2,7 @@ const roles = {
   harvester: {
     role: 'harvester',
     parts: [WORK, WORK, CARRY, MOVE],
-    memory: { role: 'harvester', harvesting: true, destinationId: null },
+    memory: { role: 'harvester', harvesting: true },
     probability: 6,
   },
   builder: {
