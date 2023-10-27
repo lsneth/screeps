@@ -2,7 +2,7 @@ const roles = {
   harvester: {
     role: 'harvester',
     parts: [WORK, WORK, CARRY, MOVE],
-    memory: { role: 'harvester', harvesting: true },
+    memory: { role: 'harvester', harvesting: true, destinationId: null },
     probability: 6,
   },
   builder: {
@@ -36,4 +36,4 @@ function buildRolesArray() {
   return rolesArray
 }
 
-module.exports = buildRolesArray
+module.exports = { roles, buildRolesArray }

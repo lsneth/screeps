@@ -11,7 +11,7 @@ function upgrader(creep) {
         creep.moveTo(source)
       }
     } else {
-      upgradeResult = creep.upgradeController(creep.room.controller)
+      const upgradeResult = creep.upgradeController(creep.room.controller)
       if (upgradeResult == OK) {
         return
       } else if (upgradeResult == ERR_NOT_IN_RANGE) {

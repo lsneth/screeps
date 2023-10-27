@@ -1,65 +1,72 @@
-const resultCodes = require('./utils.resultCodes')
+const { harvestCodes, transferCodes } = require('./utils.resultCodes')
 
 // harvest energy from an energy source
 function harvest(creep) {
   // if creep's store is full, set harvesting to false and start transferring
   if (creep.store.getFreeCapacity() == 0) {
+    creep.memory.destinationId = null
     creep.memory.harvesting = false
     return transfer(creep)
   }
 
-  let source = creep.pos.findClosestByPath(FIND_SOURCES)
-  if (!source) {
-    creep.pos.findClosestByRange(FIND_SOURCES)
+  if (!creep.memory.destinationId) {
+    const closestSource = creep.pos.findClosestByPath(FIND_SOURCES)
+    creep.memory.destinationId = closestSource ? closestSource.id : creep.pos.findClosestByRange(FIND_SOURCES).id
   }
+  const destination = Game.getObjectById(creep.memory.destinationId)
 
-  const harvestResult = creep.harvest(source)
+  const harvestResult = creep.harvest(destination)
   // ERR_BUSY is when they're still being spawned
   if (harvestResult === OK || harvestResult === ERR_BUSY) {
     return
   } else if (harvestResult === ERR_NOT_IN_RANGE) {
-    creep.moveTo(source)
+    creep.moveTo(destination)
+  } else if (harvestResult === ERR_INVALID_TARGET) {
+    creep.moveTo(destination)
   } else {
-    Game.notify(`Harvester harvest error: ${harvestResult}`)
-    console.log(`Harvester harvest error: ${harvestResult}. Creep: ${creep}. Source: ${source}.`)
+    Game.notify(`${harvestCodes[Math.abs(harvestResult)]}`)
+    console.log(`${harvestCodes[Math.abs(harvestResult)]}`)
   }
 }
 
 // transfer energy into an extension or spawn
 function transfer(creep) {
-  // if creep's store is empty, set harvesting to true and start harvesting
+  // if creep's store is empty, switch to harvesting mode and harvest
   if (creep.store.getFreeCapacity() === creep.store.getCapacity()) {
+    creep.memory.destinationId = null
     creep.memory.harvesting = true
     return harvest(creep)
   }
 
-  let closestSpawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
+  // determine what energy store to transfer to, extensions take priority because they don't create their own energy
+  if (!creep.memory.destinationId) {
+    let closestSpawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
+    if (!closestSpawn) {
+      closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
+    }
 
-  if (!closestSpawn) {
-    closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
+    // closest extension that isn't full
+    const closestExtension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+      filter: (structure) =>
+        structure.structureType === STRUCTURE_EXTENSION &&
+        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+        structure.hits > 0,
+    })
+
+    creep.memory.destinationId = closestExtension ? closestExtension.id : closestSpawn.id
   }
 
-  // closest extension that isn't full
-  const closestExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-    filter: (structure) =>
-      structure.structureType === STRUCTURE_EXTENSION &&
-      structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-      structure.hits > 0,
-  })
+  const destination = Game.getObjectById(creep.memory.destinationId)
 
-  // determine what energy store to transfer to, extensions take priority because they don't create their own
-  const energyStore = closestExtension ? closestExtension : closestSpawn
-
-  const transferResult = creep.transfer(energyStore, RESOURCE_ENERGY)
-  // if it's full, just wait
-  // TODO: maybe it should move on when the store is full?
+  const transferResult = creep.transfer(destination, RESOURCE_ENERGY)
+  // if it's full, just wait // TODO: maybe it should move on when the store is full?
   if (transferResult === OK || transferResult === ERR_FULL) {
     return
   } else if (transferResult === ERR_NOT_IN_RANGE) {
-    creep.moveTo(energyStore)
+    creep.moveTo(destination)
   } else {
-    Game.notify('Harvester transfer error: ', transferResult)
-    console.log('Harvester transfer error: ', transferResult)
+    Game.notify(`${transferCodes[Math.abs(transferResult)]}`)
+    console.log(transferCodes[Math.abs(transferResult)])
   }
 }
 
