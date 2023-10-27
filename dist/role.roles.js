@@ -9,7 +9,7 @@ const roles = {
     role: 'builder',
     parts: [WORK, WORK, CARRY, MOVE],
     memory: { role: 'builder', building: false },
-    probability: 3,
+    probability: 4,
   },
   upgrader: {
     role: 'upgrader',
@@ -22,6 +22,12 @@ const roles = {
     parts: [WORK, WORK, CARRY, MOVE],
     memory: { role: 'repairer', repairing: false },
     probability: 2,
+  },
+  attacker: {
+    role: 'attacker',
+    parts: [MOVE, MOVE, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH],
+    memory: { role: 'attacker', attacking: false },
+    probability: 1,
   },
 }
 

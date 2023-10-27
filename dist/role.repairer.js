@@ -5,10 +5,14 @@ function repairer(creep) {
   }
 
   if (creep.memory.repairing === true) {
-    const repairSites = creep.room.find(FIND_MY_STRUCTURES, {
-      filter: (object) => object.hits < object.hitsMax,
+    const repairSites = creep.room.find(FIND_STRUCTURES, {
+      filter: (structure) => structure.hits < structure.hitsMax,
     })
-    if (repairSites.length === 0) return
+
+    // if there is nothing to repair, don't clog up the energy sources or paths
+    if (repairSites.length === 0) {
+      creep.moveTo(Game.flags.repairerCamp)
+    }
 
     repairSites.sort((a, b) => a.hits - b.hits)
 

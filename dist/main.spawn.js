@@ -12,6 +12,8 @@ function mainSpawn() {
       })
     }
 
+    // TODO: if there isn't at least 1 (or a certain length) of any given creeper role, spawn one before going to chance
+
     // get a random creep role, respecting probabilities
     const rolesArray = buildRolesArray()
     const random = Math.floor(Math.random() * rolesArray.length)
