@@ -31,4 +31,14 @@ const buildCodes = {
   12: 'build result: ERR_NO_BODYPART, There are no WORK body parts in this creep’s body.',
 }
 
-module.exports = { buildCodes, harvestCodes, transferCodes }
+const repairCodes = {
+  0: 'repair result: OK, the operation has been scheduled successfully.',
+  1: 'repair result: ERR_NOT_OWNER, you are not the owner of this creep.',
+  4: 'repair result: ERR_BUSY, the creep is still being spawned.',
+  6: 'repair result: ERR_NOT_ENOUGH_RESOURCES, the creep does not carry any energy.',
+  7: 'repair result: ERR_INVALID_TARGET, the target is not a valid structure object.',
+  9: 'repair result: ERR_NOT_IN_RANGE, the target is too far away.',
+  12: "repair result: ERR_NO_BODYPART, there are no WORK body parts in this creep's body.",
+}
+
+module.exports = { buildCodes, harvestCodes, transferCodes, repairCodes }

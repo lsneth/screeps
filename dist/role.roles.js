@@ -1,31 +1,31 @@
 const roles = {
   harvester: {
     role: 'harvester',
-    parts: [WORK, WORK, CARRY, MOVE],
+    parts: [WORK, CARRY, MOVE, MOVE],
     memory: { role: 'harvester', harvesting: true },
-    probability: 6,
+    probability: 5,
   },
   builder: {
     role: 'builder',
-    parts: [WORK, WORK, CARRY, MOVE],
-    memory: { role: 'builder', building: false },
+    parts: [WORK, CARRY, MOVE, MOVE],
+    memory: { role: 'builder', harvesting: true },
     probability: 4,
   },
   upgrader: {
     role: 'upgrader',
-    parts: [WORK, WORK, CARRY, MOVE],
+    parts: [WORK, CARRY, MOVE, MOVE],
     memory: { role: 'upgrader', upgrading: false },
-    probability: 3,
+    probability: 2,
   },
   repairer: {
     role: 'repairer',
-    parts: [WORK, WORK, CARRY, MOVE],
-    memory: { role: 'repairer', repairing: false },
-    probability: 2,
+    parts: [WORK, CARRY, MOVE, MOVE],
+    memory: { role: 'repairer', harvesting: true, repairsPriority: [] },
+    probability: 1,
   },
   attacker: {
     role: 'attacker',
-    parts: [MOVE, MOVE, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH],
+    parts: [TOUGH, TOUGH, ATTACK, MOVE, MOVE, MOVE],
     memory: { role: 'attacker', attacking: false },
     probability: 1,
   },
@@ -35,7 +35,7 @@ function buildRolesArray() {
   const rolesArray = []
   for (let role in roles) {
     for (let i = 0; i < roles[role].probability; i++) {
-      rolesArray.push(roles[role])
+      rolesArray.push(roles[role].role)
     }
   }
 

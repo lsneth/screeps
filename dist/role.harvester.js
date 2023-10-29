@@ -1,39 +1,15 @@
-const { harvestCodes, transferCodes } = require('./utils.resultCodes')
-// const harvest = require('./action.harvest') // TODO: fix harvest function and import it here instead of defining it here
-
-// harvest energy from an energy source
-function harvest(creep) {
-  // if creep's store is full, set harvesting to false and start transferring
-  if (creep.store.getFreeCapacity() === 0) {
-    creep.memory.harvesting = false
-    return transfer(creep)
-  }
-
-  let source = creep.pos.findClosestByPath(FIND_SOURCES)
-  if (!source) {
-    creep.pos.findClosestByRange(FIND_SOURCES)
-  }
-
-  const harvestResult = creep.harvest(source)
-  // ERR_BUSY is when they're still being spawned, ERR_INVALID_TARGET in this case is because all energy sources are blocked
-  if (harvestResult === OK || harvestResult === ERR_BUSY || harvestResult === ERR_INVALID_TARGET) {
-    return
-  } else if (harvestResult === ERR_NOT_IN_RANGE) {
-    creep.moveTo(source)
-  } else {
-    Game.notify(`${harvestCodes[Math.abs(harvestResult)]}`)
-    console.log(`${harvestCodes[Math.abs(harvestResult)]}`)
-  }
-}
+const { transferCodes } = require('./utils.resultCodes')
+const harvestAction = require('./action.harvest')
 
 // transfer energy into an extension or spawn
 function transfer(creep) {
   // if creep's store is empty, switch to harvesting mode and harvest
   if (creep.store.getFreeCapacity() === creep.store.getCapacity()) {
-    creep.memory.harvesting = true
-    return harvest(creep)
+    harvestAction({ creep, postHarvestAction: () => transfer(creep) })
+    return
   }
 
+  // closest spawn
   let closestSpawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
   if (!closestSpawn) {
     closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
@@ -66,7 +42,7 @@ function transfer(creep) {
 function harvester(creep) {
   // if creep is in harvesting mode, collect energy from sources
   if (creep.memory.harvesting) {
-    harvest(creep)
+    harvestAction({ creep, postHarvestAction: () => transfer(creep) })
   }
   // if creep is not in harvesting mode, transfer energy to extension or spawn
   else {

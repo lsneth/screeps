@@ -1,18 +1,24 @@
 const { harvestCodes } = require('./utils.resultCodes')
 
 // harvest energy from an energy source
-function harvest({ creep, postHarvestAction }) {
-  // if creep's store is full, set harvesting to false and start transferring
-  // TODO: figure out why creep is often undefined here
+function harvestAction({ creep, postHarvestAction }) {
+  // if creep's store is full
   if (creep.store.getFreeCapacity() === 0) {
+    // set harvesting to false and do the post harvest action
     creep.memory.harvesting = false
-    return postHarvestAction(creep)
+    postHarvestAction(creep)
+    return
+  }
+  // if creep's store is not full
+  else {
+    // set harvesting mode to true, this is usually only relevant when harvestAction is first called
+    creep.memory.harvesting = true
   }
 
-  // find nearest energy source
-  let source = creep.pos.findClosestByPath(FIND_SOURCES)
+  // find nearest active energy source
+  let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE)
   if (!source) {
-    creep.pos.findClosestByRange(FIND_SOURCES)
+    creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE)
   }
 
   // harvest the source
@@ -27,8 +33,8 @@ function harvest({ creep, postHarvestAction }) {
     creep.moveTo(source)
   } else {
     Game.notify(`${creep.memory.role} ${harvestCodes[Math.abs(harvestResult)]}`)
-    console.log(`${creep.memory.role} ${harvestCodes[Math.abs(harvestResult)]}`)
+    console.log(`${creep.memory.role} ${harvestCodes[Math.abs(harvestResult)]}${creep.name}`)
   }
 }
 
-module.exports = harvest
+module.exports = harvestAction

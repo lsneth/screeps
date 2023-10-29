@@ -1,28 +1,22 @@
-function builder(creep) {
-  let source = creep.pos.findClosestByPath(FIND_SOURCES) // TODO: FIND_SOURCES_ACTIVE?
-  if (!source) {
-    creep.pos.findClosestByRange(FIND_SOURCES)
-  }
+const harvestAction = require('./action.harvest')
 
-  if (creep.memory.building === true) {
-    const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
-    if (constructionSites.length === 0) return
-    if (creep.store[RESOURCE_ENERGY] === 0) {
-      creep.memory.building = false
-      if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(source)
-      }
-    } else {
-      if (creep.build(constructionSites[0]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(constructionSites[0])
-      }
-    }
+function build(creep) {
+  const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
+  if (constructionSites.length === 0) return
+  if (creep.store[RESOURCE_ENERGY] === 0) {
+    harvestAction({ creep, postHarvestAction: () => build(creep) })
   } else {
-    if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(source)
-    } else if (creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
-      creep.memory.building = true
+    if (creep.build(constructionSites[0]) === ERR_NOT_IN_RANGE) {
+      creep.moveTo(constructionSites[0])
     }
+  }
+}
+
+function builder(creep) {
+  if (creep.memory.harvesting === true) {
+    harvestAction({ creep, postHarvestAction: () => build(creep) })
+  } else {
+    build(creep)
   }
 }
 
