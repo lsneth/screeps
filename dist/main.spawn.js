@@ -32,7 +32,7 @@ function mainSpawn() {
     const role = workerRoles[spawn.memory.nextRole]
     const noHarvesters = _.sum(Game.creeps, (creep) => creep.memory.role === 'harvester') === 0 // in case all harvesters are dead
     // TODO: figure out a better way to do the 300 thing. It's here to counteract the -300 in utils.makeCreeperBody
-    const energy = noHarvesters ? spawn.room.energyAvailable + 300 : spawn.room.energyCapacityAvailable
+    const energy = noHarvesters ? spawn.room.energyAvailable : spawn.room.energyCapacityAvailable
     const body = makeCreeperBody(energy, spawn.memory.nextRole)
 
     const spawnResult = spawn.spawnCreep(body, `${role.name}${Game.time.toString()}`, {
