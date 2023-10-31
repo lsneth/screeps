@@ -8,7 +8,7 @@ module.exports = function (grunt) {
       options: {
         email: process.env.EMAIL,
         token: process.env.AUTH_TOKEN,
-        branch: 'test',
+        branch: 'default',
         //server: 'season'
       },
       dist: {

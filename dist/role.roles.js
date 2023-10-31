@@ -1,45 +1,50 @@
-const roles = {
+const workerRoles = {
   harvester: {
-    role: 'harvester',
-    parts: [WORK, CARRY, MOVE, MOVE],
+    name: 'harvester',
     memory: { role: 'harvester', harvesting: true },
+    minCount: 4,
     probability: 5,
   },
   builder: {
-    role: 'builder',
-    parts: [WORK, CARRY, MOVE, MOVE],
+    name: 'builder',
     memory: { role: 'builder', harvesting: true },
+    minCount: 3,
     probability: 4,
   },
   upgrader: {
-    role: 'upgrader',
-    parts: [WORK, CARRY, MOVE, MOVE],
+    name: 'upgrader',
     memory: { role: 'upgrader', upgrading: false },
+    minCount: 2,
     probability: 2,
   },
   repairer: {
-    role: 'repairer',
-    parts: [WORK, CARRY, MOVE, MOVE],
+    name: 'repairer',
     memory: { role: 'repairer', harvesting: true, repairsPriority: [] },
-    probability: 1,
+    minCount: 1,
+    probability: 3,
   },
-  attacker: {
-    role: 'attacker',
-    parts: [TOUGH, TOUGH, ATTACK, MOVE, MOVE, MOVE],
-    memory: { role: 'attacker', attacking: false },
+  fortifier: {
+    name: 'fortifier',
+    memory: { role: 'fortifier', harvesting: true, fortifyPriority: [] },
+    minCount: 1,
     probability: 1,
   },
 }
 
-function buildRolesArray() {
-  const rolesArray = []
-  for (let role in roles) {
-    for (let i = 0; i < roles[role].probability; i++) {
-      rolesArray.push(roles[role].role)
-    }
+const workerSpawnPool = []
+for (const name in workerRoles) {
+  for (let i = 0; i < workerRoles[name].probability; i++) {
+    workerSpawnPool.push(name)
   }
-
-  return rolesArray
 }
 
-module.exports = { roles, buildRolesArray }
+const fightingRoles = {
+  attacker: {
+    name: 'attacker',
+    memory: { role: 'attacker', attacking: false },
+    minCount: 4,
+    probability: 1,
+  },
+}
+
+module.exports = { workerRoles, workerSpawnPool }

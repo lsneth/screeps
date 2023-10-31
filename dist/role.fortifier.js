@@ -4,7 +4,7 @@ const harvestAction = require('./action.harvest')
 
 function repairAction(creep) {
   // if there is nothing to repair
-  if (creep.memory.repairsPriority.length === 0) {
+  if (creep.memory.fortifyPriority.length === 0) {
     // go to camp, don't clog up the energy sources or paths
     creep.moveTo(Game.flags.repairerCamp)
     creep.say('camping')
@@ -20,14 +20,14 @@ function repairAction(creep) {
     // if the creep still has energy in its store
     else {
       // remove from memory any sites that have been fully repaired
-      creep.memory.repairsPriority = creep.memory.repairsPriority.filter(
+      creep.memory.fortifyPriority = creep.memory.fortifyPriority.filter(
         (repairSiteId) => Game.getObjectById(repairSiteId).hits < Game.getObjectById(repairSiteId).hitsMax
       )
 
       const closestRepairSite = creep.pos.findClosestByPath(
-        creep.memory.repairsPriority.slice(0, 4).map((repairSite) => Game.getObjectById(repairSite))
+        creep.memory.fortifyPriority.slice(0, 4).map((fortifySite) => Game.getObjectById(fortifySite))
       )
-      // const closestRepairSite = Game.getObjectById(creep.memory.repairsPriority[0])
+      // const closestRepairSite = Game.getObjectById(creep.memory.fortifyPriority[0])
 
       const repairResult = creep.repair(closestRepairSite)
       if (repairResult === OK) return
@@ -42,26 +42,17 @@ function repairAction(creep) {
   }
 }
 
-function repairer(creep) {
-  // temp test to see how many roads are destroyed from lack of repairs
-  const roads = creep.room.find(FIND_STRUCTURES, {
-    filter: (structure) => structure.structureType === STRUCTURE_ROAD && structure.hits === 1,
-  })
-  if (roads.length) {
-    Game.notify(`a road was destroyed ${roads[0].id}: ${roads[0].pos.x}, ${roads[0].pos.y}`)
-    console.log(`a road was destroyed ${roads[0].id}: ${roads[0].pos.x}, ${roads[0].pos.y}`)
-  }
-
-  // update repairsPriority every 100 ticks (or if it's a brand new repairer creep)
-  if (Game.time % 100 === 0 || !creep.memory.repairsPriority) {
+function fortifier(creep) {
+  // update fortifyPriority every 100 ticks (or if it's a brand new fortifier creep)
+  if (Game.time % 100 === 0 || !creep.memory.fortifyPriority) {
     // find damaged structures
-    const repairSites = creep.room
+    const fortifySites = creep.room
       .find(FIND_STRUCTURES, {
         filter: (structure) =>
-          structure.hits < structure.hitsMax &&
-          // filter out walls and ramparts
-          structure.structureType !== STRUCTURE_RAMPART &&
-          structure.structureType !== STRUCTURE_WALL,
+          (structure.hits < structure.hitsMax &&
+            // filter out walls and ramparts
+            structure.structureType === STRUCTURE_RAMPART) ||
+          structure.structureType === STRUCTURE_WALL,
       })
       // sort the repair sites in order from most damage to least damage (by percentage)
       .sort(function (a, b) {
@@ -69,7 +60,7 @@ function repairer(creep) {
       })
 
     // save the ids to the creep's memory
-    creep.memory.repairsPriority = repairSites.map((repairSite) => repairSite.id)
+    creep.memory.fortifyPriority = fortifySites.map((fortifySite) => fortifySite.id)
   }
 
   // if creep is in harvesting mode
@@ -82,4 +73,4 @@ function repairer(creep) {
   }
 }
 
-module.exports = repairer
+module.exports = fortifier
