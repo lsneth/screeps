@@ -1,41 +1,51 @@
+// TODO: don't make a trip unless the creep is full or empty, not somewhere in between
+
+const collect = require('./action.collect')
 const { transferCodes } = require('./utils.resultCodes')
 
-// TODO: figure out how to go to the harvesters that are never the closest
 // transport energy from harvesters to an extension or spawn
 function transport(creep) {
-  // if creep's store isn't full
-  if (creep.store.getUsedCapacity() <= 0) {
-    // move towards a harvester. when the transporter gets there, the harvester will fill it with energy.
-    creep.moveTo(
-      creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-        filter: (creep) =>
-          creep.memory.role === 'harvester' && creep.store.getUsedCapacity() / creep.store.getCapacity() >= 0.1,
-      })
-    )
+  // if all stores in the room are full
+  if (creep.room.energyAvailable === creep.room.energyCapacityAvailable) {
+    creep.moveTo(Game.flags.camp)
   }
-  // if creep has store is full
+  // if not all stores in the room are full
   else {
-    // the closest extension if there is one available, else the closest spawn
-    const closestStore =
-      creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-        filter: (structure) => structure.structureType === STRUCTURE_EXTENSION && structure.store.getFreeCapacity() > 0,
-      }) || creep.pos.findClosestByPath(FIND_MY_SPAWNS)
+    // if the creep has space left in its store
+    if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+      collect(creep)
+    }
+    // if the creep does not have space left in its store
+    else {
+      let closestStore =
+        creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+          filter: (structure) =>
+            structure.structureType === STRUCTURE_EXTENSION && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+        }) || creep.pos.findClosestByPath(FIND_MY_SPAWNS)
+      // sometimes when a creep's path is blocked, the above will return null. this is the backup to make sure `closestStore` is defined.
+      if (!closestStore) {
+        closestStore =
+          creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            filter: (structure) =>
+              structure.structureType === STRUCTURE_EXTENSION && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+          }) || creep.pos.findClosestByPath(FIND_MY_SPAWNS)
+      }
 
-    // attempt to transfer energy to closestStore
-    const transferResult = creep.transfer(closestStore, RESOURCE_ENERGY)
-    switch (transferResult) {
-      case OK:
-      case ERR_BUSY: // creep is still spawning
-        break
+      // attempt to transfer energy to closestStore
+      const result = creep.transfer(closestStore, RESOURCE_ENERGY)
+      switch (result) {
+        case OK:
+          break
 
-      case ERR_NOT_IN_RANGE:
-        creep.moveTo(closestStore)
-        break
+        case ERR_NOT_IN_RANGE:
+          creep.moveTo(closestStore)
+          break
 
-      default:
-        Game.notify(`${transferCodes[Math.abs(transferResult)]}`)
-        console.log(`${transferCodes[Math.abs(transferResult)]}`)
-        break
+        default:
+          Game.notify(`${transferCodes[-result]}, ${creep.name}`)
+          console.log(`${transferCodes[-result]}, ${creep.name}, target: ${closestStore}`)
+          break
+      }
     }
   }
 }

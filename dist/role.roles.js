@@ -1,63 +1,31 @@
-const workerRoles = {
-  harvester: {
-    name: 'harvester',
-    memory: { role: 'harvester' },
-    minCount: 1,
-    probability: 1,
-  },
-  transporter: {
-    name: 'transporter',
-    memory: { role: 'transporter' },
-    minCount: 1,
-    probability: 1,
-  },
-  // builder: {
-  //   name: 'builder',
-  //   memory: { role: 'builder', harvesting: true },
-  //   minCount: 2,
-  //   probability: 2,
-  // },
-  // upgrader: {
-  //   name: 'upgrader',
-  //   memory: { role: 'upgrader', upgrading: false },
-  //   minCount: 3,
-  //   probability: 3,
-  // },
-  // repairer: {
-  //   name: 'repairer',
-  //   memory: { role: 'repairer', harvesting: true, repairsPriority: [] },
-  //   minCount: 1,
-  //   probability: 4,
-  // },
-  // fortifier: {
-  //   name: 'fortifier',
-  //   memory: { role: 'fortifier', harvesting: true, fortifyPriority: [] },
-  //   minCount: 1,
-  //   probability: 2,
-  // },
-  // // TODO: move this into attacker roles object
-  // attacker: {
-  //   name: 'attacker',
-  //   memory: { role: 'attacker', attacking: false },
-  //   minCount: 2,
-  //   probability: 1,
-  // },
-}
+const { getMaxHarvesterCount } = require('./utils.functions')
 
-const workerSpawnPool = []
-for (const name in workerRoles) {
-  for (let i = 0; i < workerRoles[name].probability; i++) {
-    workerSpawnPool.push(name)
+// spawn priority is top to bottom
+function createRolesObject(spawn) {
+  const maxHarvesterCount = getMaxHarvesterCount(spawn.room)
+  return {
+    harvester: {
+      name: 'harvester',
+      memory: { role: 'harvester' },
+      parts: [WORK, CARRY, CARRY, CARRY, MOVE],
+      cost: 300,
+      maxCount: maxHarvesterCount,
+    },
+    transporter: {
+      name: 'transporter',
+      memory: { role: 'transporter' },
+      parts: [CARRY, MOVE],
+      cost: 100,
+      maxCount: maxHarvesterCount * 2,
+    },
+    // upgrader: {
+    //   name: 'upgrader',
+    //   memory: { role: 'upgrader' },
+    //   parts: [CARRY, MOVE],
+    //   cost: 100,
+    //   maxCount: 3,
+    // },
   }
 }
 
-const fightingRoles = {
-  attacker: {
-    name: 'attacker',
-    memory: { role: 'attacker', attacking: false },
-    minCount: 4,
-    probability: 1,
-  },
-}
-
-module.exports = { workerRoles, workerSpawnPool }
+module.exports = createRolesObject

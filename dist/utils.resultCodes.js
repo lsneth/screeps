@@ -41,4 +41,24 @@ const repairCodes = {
   12: "repair result: ERR_NO_BODYPART, there are no WORK body parts in this creep's body.",
 }
 
-module.exports = { buildCodes, harvestCodes, transferCodes, repairCodes }
+const upgradeCodes = {
+  0: 'upgrade result: OK, the operation has been scheduled successfully.',
+  1: 'upgrade result: ERR_NOT_OWNER, you are not the owner of this creep or the target controller.',
+  4: 'upgrade result: ERR_BUSY, the creep is still being spawned.',
+  6: 'upgrade result: ERR_NOT_ENOUGH_RESOURCES, the creep does not have any carried energy.',
+  7: 'upgrade result: ERR_INVALID_TARGET, the target is not a valid controller object, or the controller upgrading is blocked.',
+  9: 'upgrade result: ERR_NOT_IN_RANGE, the target is too far away.',
+  12: "upgrade result: ERR_NO_BODYPART, there are no WORK body parts in this creep's body.",
+}
+
+const spawnCodes = {
+  0: 'spawn result: OK, the operation has been scheduled successfully.',
+  1: 'spawn result: ERR_NOT_OWNER, you are not the owner of this spawn.',
+  3: 'spawn result: ERR_NAME_EXISTS, there is a creep with the same name already.',
+  4: 'spawn result: ERR_BUSY, the spawn is already in process of spawning another creep.',
+  6: 'spawn result: ERR_NOT_ENOUGH_ENERGY, the spawn and its extensions contain not enough energy to create a creep with the given body.',
+  10: 'spawn result: ERR_INVALID_ARGS, body is not properly described or name was not provided.',
+  14: 'spawn result: ERR_RCL_NOT_ENOUGH, your Room Controller level is insufficient to use this spawn.',
+}
+
+module.exports = { buildCodes, harvestCodes, transferCodes, repairCodes, upgradeCodes, spawnCodes }
