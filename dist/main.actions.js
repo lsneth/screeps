@@ -1,31 +1,36 @@
-const harvester = require('./role.harvester')
-const upgrader = require('./role.upgrader')
-const builder = require('./role.builder')
-const repairer = require('./role.repairer')
-const fortifier = require('./role.fortifier')
-const attacker = require('./role.attacker')
+const harvest = require('./role.harvester')
+const transport = require('./role.transporter')
+const upgrade = require('./role.upgrader')
+// const builder = require('./role.builder')
+// const repairer = require('./role.repairer')
+// const fortifier = require('./role.fortifier')
+// const attacker = require('./role.attacker')
 
 function mainActions() {
   for (const name in Game.creeps) {
     const creep = Game.creeps[name]
+
     if (creep.memory.role === 'harvester') {
-      harvester(creep)
+      if (!creep.spawning) harvest(creep)
+    }
+    if (creep.memory.role === 'transporter') {
+      if (!creep.spawning) transport(creep)
     }
     if (creep.memory.role === 'upgrader') {
-      upgrader(creep)
+      if (!creep.spawning) upgrade(creep)
     }
-    if (creep.memory.role === 'builder') {
-      builder(creep)
-    }
-    if (creep.memory.role === 'repairer') {
-      repairer(creep)
-    }
-    if (creep.memory.role === 'fortifier') {
-      fortifier(creep)
-    }
-    if (creep.memory.role === 'attacker') {
-      attacker(creep)
-    }
+    // if (creep.memory.role === 'builder') {
+    //   if (!creep.spawning) builder(creep)
+    // }
+    // if (creep.memory.role === 'repairer') {
+    //   if (!creep.spawning) repairer(creep)
+    // }
+    // if (creep.memory.role === 'fortifier') {
+    //   if (!creep.spawning) fortifier(creep)
+    // }
+    // if (creep.memory.role === 'attacker') {
+    //   if (!creep.spawning) attacker(creep)
+    // }
   }
 }
 

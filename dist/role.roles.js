@@ -1,50 +1,31 @@
-const workerRoles = {
-  harvester: {
-    name: 'harvester',
-    memory: { role: 'harvester', harvesting: true },
-    minCount: 4,
-    probability: 5,
-  },
-  builder: {
-    name: 'builder',
-    memory: { role: 'builder', harvesting: true },
-    minCount: 3,
-    probability: 4,
-  },
-  upgrader: {
-    name: 'upgrader',
-    memory: { role: 'upgrader', upgrading: false },
-    minCount: 2,
-    probability: 2,
-  },
-  repairer: {
-    name: 'repairer',
-    memory: { role: 'repairer', harvesting: true, repairsPriority: [] },
-    minCount: 1,
-    probability: 3,
-  },
-  fortifier: {
-    name: 'fortifier',
-    memory: { role: 'fortifier', harvesting: true, fortifyPriority: [] },
-    minCount: 1,
-    probability: 1,
-  },
-}
+const { getMaxHarvesterCount } = require('./utils.functions')
 
-const workerSpawnPool = []
-for (const name in workerRoles) {
-  for (let i = 0; i < workerRoles[name].probability; i++) {
-    workerSpawnPool.push(name)
+// spawn priority is top to bottom
+function createRolesObject(spawn) {
+  const maxHarvesterCount = getMaxHarvesterCount(spawn.room)
+  return {
+    harvester: {
+      name: 'harvester',
+      memory: { role: 'harvester' },
+      parts: [WORK, CARRY, CARRY, CARRY, MOVE],
+      cost: 300,
+      maxCount: maxHarvesterCount,
+    },
+    transporter: {
+      name: 'transporter',
+      memory: { role: 'transporter' },
+      parts: [CARRY, MOVE],
+      cost: 100,
+      maxCount: maxHarvesterCount * 2,
+    },
+    upgrader: {
+      name: 'upgrader',
+      memory: { role: 'upgrader' },
+      parts: [WORK, CARRY, CARRY, MOVE, MOVE],
+      cost: 100,
+      maxCount: 5,
+    },
   }
 }
 
-const fightingRoles = {
-  attacker: {
-    name: 'attacker',
-    memory: { role: 'attacker', attacking: false },
-    minCount: 4,
-    probability: 1,
-  },
-}
-
-module.exports = { workerRoles, workerSpawnPool }
+module.exports = createRolesObject
