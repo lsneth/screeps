@@ -1,12 +1,15 @@
 // TODO: don't make a trip unless the creep is full or empty, not somewhere in between
-
+// TODO: handle case where the all accesses to a source are blocked and we get error: transfer result: ERR_INVALID_TARGET, The target is not a valid object which can contain the specified resource., transporter781, target: null
 const collect = require('./action.collect')
 const { transferCodes } = require('./utils.resultCodes')
 
 // transport energy from harvesters to an extension or spawn
 function transport(creep) {
-  // if all stores in the room are full
-  if (creep.room.energyAvailable === creep.room.energyCapacityAvailable) {
+  // if all stores in the room are full AND the creep's store is full
+  if (
+    creep.room.energyAvailable === creep.room.energyCapacityAvailable &&
+    creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0
+  ) {
     creep.moveTo(Game.flags.camp)
   }
   // if not all stores in the room are full

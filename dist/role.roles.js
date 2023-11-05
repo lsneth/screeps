@@ -18,13 +18,13 @@ function createRolesObject(spawn) {
       cost: 100,
       maxCount: maxHarvesterCount * 2,
     },
-    // upgrader: {
-    //   name: 'upgrader',
-    //   memory: { role: 'upgrader' },
-    //   parts: [CARRY, MOVE],
-    //   cost: 100,
-    //   maxCount: 3,
-    // },
+    upgrader: {
+      name: 'upgrader',
+      memory: { role: 'upgrader' },
+      parts: [WORK, CARRY, CARRY, MOVE, MOVE],
+      cost: 100,
+      maxCount: 5,
+    },
   }
 }
 

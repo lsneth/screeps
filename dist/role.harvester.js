@@ -23,9 +23,12 @@ function harvest(creep) {
     }
   }
 
+  // a list of roles that a harvester creep is allowed to transfer energy to
+  const transferRoles = ['transporter', 'upgrader']
+
   // if there are adjacent creeps, transfer energy to them
   const adjacentCreeps = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
-    filter: (c) => c.memory.role === 'transporter' && c.id !== creep.id,
+    filter: (c) => transferRoles.includes(c.memory.role) && c.id !== creep.id,
   })
 
   if (adjacentCreeps.length > 0) {

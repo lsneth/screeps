@@ -16,20 +16,20 @@ function mainActions() {
     if (creep.memory.role === 'transporter') {
       if (!creep.spawning) transport(creep)
     }
-    // if (creep.memory.role === 'upgrader') {
-    //   upgrade(creep)
-    // }
+    if (creep.memory.role === 'upgrader') {
+      if (!creep.spawning) upgrade(creep)
+    }
     // if (creep.memory.role === 'builder') {
-    //   builder(creep)
+    //   if (!creep.spawning) builder(creep)
     // }
     // if (creep.memory.role === 'repairer') {
-    //   repairer(creep)
+    //   if (!creep.spawning) repairer(creep)
     // }
     // if (creep.memory.role === 'fortifier') {
-    //   fortifier(creep)
+    //   if (!creep.spawning) fortifier(creep)
     // }
     // if (creep.memory.role === 'attacker') {
-    //   attacker(creep)
+    //   if (!creep.spawning) attacker(creep)
     // }
   }
 }

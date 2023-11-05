@@ -27,9 +27,10 @@ function mainSpawn() {
   // get roles object
   const roles = createRolesObject(spawn)
 
+  // TODO: this transporter/harvester balance doesn't seem to be working quite how I think it is
   // if we don't have enough transporters
   if (
-    // if there are less than 2 transporters per creep AND
+    // if there are less than 2 transporters per harvester AND
     ((currentCreepCounts.transporter || 0 * 2) < currentCreepCounts.harvester || 0) &&
     // if there are less transporters than max transporters
     (currentCreepCounts.transporter || 0 < roles.transporter.maxCount)
