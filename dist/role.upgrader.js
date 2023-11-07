@@ -2,6 +2,7 @@ const collect = require('./action.collect')
 const { upgradeCodes } = require('./utils.resultCodes')
 
 function upgrade(creep) {
+  // if the creep has energy in its store
   if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
     const result = creep.upgradeController(creep.room.controller)
     switch (result) {

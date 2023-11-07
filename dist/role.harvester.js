@@ -17,14 +17,18 @@ function harvest(creep) {
         break
 
       default:
-        Game.notify(`${creep.memory.role} ${harvestCodes[-result]}, ${creep.name}`)
-        console.log(`${creep.memory.role} ${harvestCodes[-result]}, ${creep.name}`)
+        Game.notify(
+          `${creep.memory.role} ${harvestCodes[-result]}, ${creep.name}, ${creep.id}, (${(creep.pos.x, creep.pos.y)})`
+        )
+        console.log(
+          `${creep.memory.role} ${harvestCodes[-result]}, ${creep.name}, ${creep.id}, (${(creep.pos.x, creep.pos.y)})`
+        )
         break
     }
   }
 
   // a list of roles that a harvester creep is allowed to transfer energy to
-  const transferRoles = ['transporter', 'upgrader']
+  const transferRoles = ['transporter', 'upgrader', 'builder']
 
   // if there are adjacent creeps, transfer energy to them
   const adjacentCreeps = creep.pos.findInRange(FIND_MY_CREEPS, 1, {

@@ -2,7 +2,13 @@ const { spawnCodes } = require('./utils.resultCodes')
 const createRolesObject = require('./role.roles')
 
 function customSpawnCreep(spawn, role) {
-  const result = spawn.spawnCreep(role.parts, `${role.name}${Game.time.toString()}`, {
+  const creepScale = Math.floor(spawn.room.energyCapacityAvailable / role.cost)
+  const parts = []
+  role.parts.map((part) => {
+    for (let i = 0; i < creepScale; i++) parts.push(part)
+  })
+
+  const result = spawn.spawnCreep(parts, `${role.name}${Game.time.toString()}`, {
     memory: role.memory,
   })
   switch (result) {
@@ -30,10 +36,10 @@ function mainSpawn() {
   // TODO: this transporter/harvester balance doesn't seem to be working quite how I think it is
   // if we don't have enough transporters
   if (
-    // if there are less than 2 transporters per harvester AND
-    ((currentCreepCounts.transporter || 0 * 2) < currentCreepCounts.harvester || 0) &&
+    // if there are less transporters than harvester AND
+    (currentCreepCounts.transporter || 0) < (currentCreepCounts.harvester || 0) &&
     // if there are less transporters than max transporters
-    (currentCreepCounts.transporter || 0 < roles.transporter.maxCount)
+    (currentCreepCounts.transporter || 0) < roles.transporter.maxCount
   ) {
     customSpawnCreep(spawn, roles.transporter)
   }
