@@ -1,5 +1,5 @@
-const collect = require('./action.collect')
 const { buildCodes } = require('./utils.resultCodes')
+const collect = require('./action.collect')
 
 function build(creep) {
   // if the creep has energy in its store

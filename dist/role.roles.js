@@ -16,7 +16,7 @@ function createRolesObject(spawn) {
       memory: { role: 'transporter' },
       parts: [CARRY, MOVE],
       cost: 100,
-      maxCount: maxHarvesterCount / 2,
+      maxCount: Math.floor(maxHarvesterCount / 2),
     },
     upgrader: {
       name: 'upgrader',
@@ -31,6 +31,13 @@ function createRolesObject(spawn) {
       parts: [WORK, CARRY, MOVE, MOVE],
       cost: 250,
       maxCount: 10,
+    },
+    repairer: {
+      name: 'repairer',
+      memory: { role: 'repairer' },
+      parts: [WORK, CARRY, MOVE, MOVE],
+      cost: 250,
+      maxCount: 3,
     },
   }
 }

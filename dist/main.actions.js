@@ -2,7 +2,7 @@ const harvest = require('./role.harvester')
 const transport = require('./role.transporter')
 const upgrade = require('./role.upgrader')
 const build = require('./role.builder')
-// const repairer = require('./role.repairer')
+const repair = require('./role.repairer')
 // const fortifier = require('./role.fortifier')
 // const attacker = require('./role.attacker')
 
@@ -22,9 +22,9 @@ function mainActions() {
     if (creep.memory.role === 'builder') {
       if (!creep.spawning) build(creep)
     }
-    // if (creep.memory.role === 'repairer') {
-    //   if (!creep.spawning) repairer(creep)
-    // }
+    if (creep.memory.role === 'repairer') {
+      if (!creep.spawning) repair(creep)
+    }
     // if (creep.memory.role === 'fortifier') {
     //   if (!creep.spawning) fortifier(creep)
     // }

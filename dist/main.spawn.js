@@ -2,7 +2,7 @@ const { spawnCodes } = require('./utils.resultCodes')
 const createRolesObject = require('./role.roles')
 
 function customSpawnCreep(spawn, role) {
-  const creepScale = Math.floor(spawn.room.energyCapacityAvailable / role.cost)
+  const creepScale = Math.floor(spawn.room.energyCapacityAvailable / 2 / role.cost)
   const parts = []
   role.parts.map((part) => {
     for (let i = 0; i < creepScale; i++) parts.push(part)
