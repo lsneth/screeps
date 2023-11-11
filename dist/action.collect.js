@@ -5,7 +5,7 @@ function collect(creep) {
   const closestHarvester = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
     filter: (c) =>
       c.memory.role === 'harvester' &&
-      c.store.getUsedCapacity(RESOURCE_ENERGY) / c.store.getCapacity(RESOURCE_ENERGY) > 0.33, // this 33% is arbitrary for now. It helps creeps get around to all harvesters and not ignore the ones that are just a bit further than others.
+      c.store.getUsedCapacity(RESOURCE_ENERGY) / c.store.getCapacity(RESOURCE_ENERGY) > 0.4, // this 40% is arbitrary for now. It helps creeps get around to all harvesters and not ignore the ones that are just a bit further than others.
   })
   creep.moveTo(closestHarvester)
 }

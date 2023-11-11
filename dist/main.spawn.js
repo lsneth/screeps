@@ -1,14 +1,32 @@
 const { spawnCodes } = require('./utils.resultCodes')
-const createRolesObject = require('./role.roles')
+const createRoleObject = require('./role.roles')
 
-function customSpawnCreep(spawn, role) {
-  const creepScale = Math.floor(spawn.room.energyCapacityAvailable / 2 / role.cost)
-  const parts = []
-  role.parts.map((part) => {
-    for (let i = 0; i < creepScale; i++) parts.push(part)
+function customSpawnCreep({ spawn, roleName, assignmentId }) {
+  const role = createRoleObject({ roleName, assignmentId, stage: spawn.room.memory.stage })
+  const result = spawn.spawnCreep(role.parts, `${roleName}${Game.time.toString()}`, {
+    memory: role.memory,
   })
+  switch (result) {
+    case OK:
+      console.log('Spawn Success: ', role.name)
+      break
+    case ERR_NOT_ENOUGH_ENERGY:
+    case ERR_BUSY:
+      break
 
-  const result = spawn.spawnCreep(parts, `${role.name}${Game.time.toString()}`, {
+    default:
+      console.log('Spawn Fail: ', spawnCodes[-result])
+      break
+  }
+
+  Game.creeps.map((creep) => {
+    spawn.room.memory.sources.trans
+  })
+}
+
+function spawnTransporter({ spawn, assignmentId }) {
+  const role = createRoleObject({ roleName: 'transporter', assignmentId, stage: spawn.room.memory.stage })
+  const result = spawn.spawnCreep(role.parts, `transporter${Game.time.toString()}`, {
     memory: role.memory,
   })
   switch (result) {
@@ -26,32 +44,43 @@ function customSpawnCreep(spawn, role) {
 }
 
 function mainSpawn() {
+  Game.creeps.map((creep) => {
+    switch (creep.memory.role) {
+      case 'harvester':
+        creep.room.memory.sources[creep.memory.assignmentId].harvester = creep.id
+
+        break
+
+      default:
+        break
+    }
+  })
   // define spawn structure to spawn at
   const spawn = Game.spawns.Spawn1
-  // get current creep counts
-  const currentCreepCounts = _.countBy(Game.creeps, 'memory.role')
-  // get roles object
-  const roles = createRolesObject(spawn)
 
-  // TODO: this transporter/harvester balance doesn't seem to be working quite how I think it is
-  // if we don't have enough transporters
-  if (
-    // if there are less transporters than harvester AND
-    (currentCreepCounts.transporter || 0) < (currentCreepCounts.harvester || 0) &&
-    // if there are less transporters than max transporters
-    (currentCreepCounts.transporter || 0) < roles.transporter.maxCount
-  ) {
-    customSpawnCreep(spawn, roles.transporter)
+  const idOfSourceWithHarvesterButNoTransporter = spawn.room.memory.sources.find(
+    (source) => !!source.harvester && source.transporters.length === 0
+  )
+  const idOfSourceWithNoHarvester = spawn.room.memory.sources.find((source) => !source.harvester)
+  const idOfSourceWithLessTransportersThanTarget = spawn.room.memory.sources.find(
+    (source) => source.transporters.length < source.targetTransporterCount
+  )
+
+  // if there is a harvester without at least one transporter assigned to the same source, spawn a transporter
+  if (idOfSourceWithHarvesterButNoTransporter) {
+    // spawn a transporter assigned to that source
+    customSpawnCreep({ spawn, roleName: 'transporter', assignmentId: idOfSourceWithHarvesterButNoTransporter })
+    return
   }
-  // if we do have enough transporters
-  else {
-    for (const key in roles) {
-      const role = roles[key]
-      if ((currentCreepCounts[role.name] || 0) < role.maxCount) {
-        customSpawnCreep(spawn, role)
-        break
-      }
-    }
+  // if there is a source in the room without a harvester assigned to it, spawn a harvester
+  else if (idOfSourceWithNoHarvester) {
+    // spawn a harvester assigned to that source
+    customSpawnCreep({ spawn, roleName: 'harvester', assignmentId: idOfSourceWithNoHarvester })
+  }
+  // if there is a source that has less transporters than target transporter count, spawn a transporter
+  else if (idOfSourceWithLessTransportersThanTarget) {
+    // spawn a transporter assigned to that source
+    customSpawnCreep({ spawn, roleName: 'transporter', assignmentId: idOfSourceWithLessTransportersThanTarget })
   }
 }
 
