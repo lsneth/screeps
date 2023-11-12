@@ -1,3 +1,6 @@
+// TODO: transporters array in harvester memory does not update.
+// TODO: figure out what happens when a harvester creep dies. What will transporters assigned to him do? Probably need to assign only to sources.
+
 const { spawnCodes } = require('./utils.resultCodes')
 
 function spawnHarvester({ spawn, roomId, sourceId }) {
