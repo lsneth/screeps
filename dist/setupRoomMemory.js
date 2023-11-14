@@ -7,7 +7,6 @@ function setupRoomMemory(room) {
 
   room.memory = {
     stage,
-    sources: room.find(FIND_SOURCES).map((source) => source.id),
   }
 }
 

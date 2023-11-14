@@ -1,5 +1,6 @@
 const { mainSpawn } = require('./main.spawn')
 const { setupRoomMemory } = require('./setupRoomMemory')
+const { mainCleanup } = require('./main.cleanup')
 
 module.exports.loop = function () {
   // setup room memory for all rooms that don't have it, or every 1000 ticks
@@ -10,4 +11,6 @@ module.exports.loop = function () {
 
   // spawn creep(s)
   mainSpawn()
+
+  mainCleanup()
 }
