@@ -54,28 +54,27 @@ function mainSpawn() {
   // define spawn structure to spawn at
   const spawn = Game.spawns.Spawn1
 
-  // ids of all sources in room
-  const sourceIds = spawn.room.find(FIND_SOURCES)
+  // all sources in room
+  const sources = spawn.room.find(FIND_SOURCES)
 
   // ids of sources with a harvester
   const populatedSourceIds = _.map(Game.creeps, (creep) => {
     if (creep.memory.role === 'harvester') return creep.memory.sourceId
   })
 
-  const currentCreepCounts = _.countBy(Game.creeps, 'memory.role')
+  const currentRoleCounts = _.countBy(Game.creeps, 'memory.role')
 
-  // TODO: base this off of need, not just to match harvester count
-  if ((currentCreepCounts.transporter || 0) < (currentCreepCounts.harvester || 0)) {
+  // if there are less transporters than harvesters // TODO: base this off of need, not just to match harvester count
+  if ((currentRoleCounts.transporter || 0) < (currentRoleCounts.harvester || 0)) {
     spawnTransporter({ spawn, roomId: spawn.room.id })
   }
   // if there is a source in the room without a harvester assigned to it, spawn a harvester
-  else if (populatedSourceIds.length < sourceIds.length) {
-    for (const i = 0; i < sourceIds.length; i++) {
-      const sourceId = sourceIds[i]
-      // if the sourceId is not in the array of populated source ids
-      if (!populatedSourceIds.includes(sourceId)) {
+  else if (populatedSourceIds.length < spawn.room.find(FIND_SOURCES).length) {
+    for (const source of sources) {
+      // if the id of source is not in the array of populated source ids
+      if (!populatedSourceIds.includes(source.id)) {
         // spawn a harvester assigned to that source
-        spawnHarvester({ spawn, roomId: spawn.room.id, sourceId })
+        spawnHarvester({ spawn, roomId: spawn.room.id, sourceId: source.id })
         break
       }
     }
