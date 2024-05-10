@@ -1,5 +1,5 @@
 const collect = require('./action.collect')
-const { upgradeCodes } = require('./utils.resultCodes')
+const { upgradeCodes } = require('../utils.resultCodes')
 
 function upgrade(creep) {
   // if the creep has energy in its store

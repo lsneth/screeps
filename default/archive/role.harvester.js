@@ -1,4 +1,4 @@
-const { harvestCodes } = require('./utils.resultCodes')
+const { harvestCodes } = require('../utils.resultCodes')
 
 function harvest(creep) {
   // if creep store isn't full

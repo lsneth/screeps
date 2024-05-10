@@ -1,4 +1,4 @@
-const { buildCodes } = require('./utils.resultCodes')
+const { buildCodes } = require('../utils.resultCodes')
 const collect = require('./action.collect')
 
 function build(creep) {

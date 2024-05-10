@@ -1,7 +1,7 @@
 // TODO: don't make a trip unless the creep is full or empty, not somewhere in between
 // TODO: handle case where the all accesses to a source are blocked and we get error: transfer result: ERR_INVALID_TARGET, The target is not a valid object which can contain the specified resource., transporter781, target: null
 const collect = require('./action.collect')
-const { transferCodes } = require('./utils.resultCodes')
+const { transferCodes } = require('../utils.resultCodes')
 
 // transport energy from harvesters to an extension or spawn
 function transport(creep) {

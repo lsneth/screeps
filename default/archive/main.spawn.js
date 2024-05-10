@@ -1,4 +1,4 @@
-const { spawnCodes } = require('./utils.resultCodes')
+const { spawnCodes } = require('../utils.resultCodes')
 const createRolesObject = require('./role.roles')
 
 function customSpawnCreep(spawn, role) {

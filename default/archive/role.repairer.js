@@ -1,5 +1,5 @@
 // TODO: save to memory the most common creep positions with roads. Make those roads a higher priority
-const { repairCodes } = require('./utils.resultCodes')
+const { repairCodes } = require('../utils.resultCodes')
 const collect = require('./action.collect')
 
 function repairAction(creep) {
