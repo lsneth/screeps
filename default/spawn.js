@@ -1,14 +1,24 @@
 const { spawnCodes } = require('./utils.resultCodes')
 
-function mainSpawn() {
-  const spawn = Game.spawns.Spawn1
+function getNextSpawnRole() {
+  const harvesterCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'harvester').length
+  const carrierCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'carrier').length
 
-  const result = spawn.spawnCreep([WORK, CARRY, MOVE], `harvester${Game.time.toString()}`, {
-    memory: { role: 'harvester' },
+  if (harvesterCount === 0) return 'harvester'
+  if (harvesterCount <= carrierCount) return 'harvester'
+  return 'carrier'
+}
+
+function spawnCreeps() {
+  const spawn = Game.spawns.Spawn1
+  const role = getNextSpawnRole()
+
+  const result = spawn.spawnCreep([WORK, CARRY, MOVE], `${role}${Game.time.toString()}`, {
+    memory: { role },
   })
   switch (result) {
     case OK:
-      console.log('Spawn Success: ', 'harvester')
+      console.log('Spawn Success: ', role)
       break
     case ERR_NOT_ENOUGH_ENERGY:
     case ERR_BUSY:
@@ -20,4 +30,4 @@ function mainSpawn() {
   }
 }
 
-module.exports = mainSpawn
+module.exports = spawnCreeps
