@@ -1,17 +1,18 @@
 const { spawnCodes } = require('./utils.resultCodes')
 
-function getNextSpawnRole() {
+function getNextSpawnRole(spawn) {
   const harvesterCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'harvester').length
   const carrierCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'carrier').length
 
-  if (harvesterCount === 0) return 'harvester'
-  if (harvesterCount <= carrierCount) return 'harvester'
+  if (harvesterCount >= spawn.room.memory.maxRoleCounts.harvester) return 'carrier'
+  else if (harvesterCount === 0) return 'harvester'
+  else if (harvesterCount <= carrierCount) return 'harvester'
   return 'carrier'
 }
 
 function spawnCreeps() {
   const spawn = Game.spawns.Spawn1
-  const role = getNextSpawnRole()
+  const role = getNextSpawnRole(spawn)
 
   const result = spawn.spawnCreep([WORK, CARRY, MOVE], `${role}${Game.time.toString()}`, {
     memory: { role },

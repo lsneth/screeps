@@ -1,13 +1,14 @@
 // prototype edits
 require('./extensions.creep')
 
+const setUpRooms = require('./setUpRooms')
 const spawnCreeps = require('./spawn')
 const creepActions = require('./actions')
-// const mainCleanup = require('./main.cleanup')
+const cleanUp = require('./cleanUp')
 
 module.exports.loop = function () {
+  setUpRooms()
   spawnCreeps()
   creepActions()
-  // // cleanup function
-  // mainCleanup()
+  cleanUp()
 }
